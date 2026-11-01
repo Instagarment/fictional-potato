@@ -1,0 +1,38 @@
+# One-click deploy on Render (render.com → New → Blueprint → pick this repo).
+# You'll be asked for the secret values; the rest have sensible defaults.
+services:
+  - type: web
+    name: print-tracker
+    runtime: node
+    # The free plan goes to sleep when idle, which delays alerts. "starter" stays awake.
+    plan: starter
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: SHOPIFY_SHOP_DOMAIN
+        sync: false
+      - key: SHOPIFY_CLIENT_ID
+        sync: false
+      - key: SHOPIFY_CLIENT_SECRET
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: DASHBOARD_PASSWORD
+        sync: false
+      - key: ALERT_EMAIL_TO
+        sync: false
+      - key: ALERT_EMAIL_FROM
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: SMTP_SECURE
+        value: "true"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: TRACK_PRODUCT_TAG
+        value: print-on-demand
