@@ -1,9 +1,10 @@
 // All settings come from environment variables (or a .env file — see .env.example).
+import fs from 'node:fs';
 
 function required(name) {
   const value = process.env[name];
   if (!value) {
-    throw new Error(`Missing required setting ${name}. Copy .env.example to .env and fill it in.`);
+    throw new Error(`Missing required setting ${name}. See .env.example for what it should be.`);
   }
   return value;
 }
@@ -15,30 +16,44 @@ function list(value) {
     .filter(Boolean);
 }
 
-export function loadConfig() {
-  const shopDomain = required('SHOPIFY_SHOP_DOMAIN')
-    .replace(/^https?:\/\//, '')
-    .replace(/\/.*$/, '');
+// Optional: bring your own private key. If neither is set, the app creates and
+// stores its own key in DATA_DIR (see src/keys.js).
+function loadPrivateKey() {
+  if (process.env.SHOPIFY_PRIVATE_KEY) {
+    // Hosting dashboards sometimes turn newlines into "\n" — undo that.
+    return process.env.SHOPIFY_PRIVATE_KEY.replace(/\\n/g, '\n');
+  }
+  if (process.env.SHOPIFY_PRIVATE_KEY_PATH) {
+    return fs.readFileSync(process.env.SHOPIFY_PRIVATE_KEY_PATH, 'utf8');
+  }
+  return null;
+}
 
+export function loadConfig({ needShopify = true } = {}) {
   return {
+    appName: process.env.APP_NAME || 'Instagarment Print on Demand',
+    companyName: process.env.COMPANY_NAME || 'Instagarment',
     port: Number(process.env.PORT || 3000),
     appUrl: (process.env.APP_URL || '').replace(/\/$/, ''),
+    dataDir: process.env.DATA_DIR || './data',
 
-    shopify: {
-      shopDomain,
-      clientId: required('SHOPIFY_CLIENT_ID'),
-      clientSecret: required('SHOPIFY_CLIENT_SECRET'),
-      apiVersion: process.env.SHOPIFY_API_VERSION || '2026-10',
-    },
+    shopify: needShopify
+      ? {
+          clientId: required('SHOPIFY_CLIENT_ID'),
+          clientSecret: required('SHOPIFY_CLIENT_SECRET'),
+          keyId: process.env.SHOPIFY_KEY_ID || null,
+          privateKey: loadPrivateKey(),
+          apiVersion: process.env.SHOPIFY_API_VERSION || '2026-10',
+        }
+      : null,
 
     tracking: {
-      // A product counts as print-on-demand if it has this tag...
-      productTag: process.env.TRACK_PRODUCT_TAG ?? 'print-on-demand',
-      // ...or if the variant's SKU starts with one of these prefixes.
-      skuPrefixes: list(process.env.TRACK_SKU_PREFIXES),
-      // Tags this app puts on orders so you can filter them in Shopify admin too.
-      toPrintTag: process.env.ORDER_TAG_TO_PRINT || 'needs-printing',
-      printedTag: process.env.ORDER_TAG_PRINTED || 'printed',
+      // Products with this tag are the ones Instagarment prints. Your customers
+      // pick them inside the app, which adds the tag for them.
+      productTag: process.env.TRACK_PRODUCT_TAG || 'instagarment',
+      // Tags put on your customers' orders so everyone can filter by them in Shopify.
+      toPrintTag: process.env.ORDER_TAG_TO_PRINT || 'instagarment-to-print',
+      printedTag: process.env.ORDER_TAG_PRINTED || 'instagarment-printed',
     },
 
     email: {
@@ -53,12 +68,12 @@ export function loadConfig() {
       },
     },
 
-    // Safety net: every N minutes, look for recent orders whose webhook never
-    // arrived (e.g. the server was asleep) and alert for them. 0 turns it off.
+    // Every N minutes, double-check the last day of orders in every store for
+    // anything a webhook missed. 0 turns it off.
     catchUpMinutes: Number(process.env.CATCH_UP_MINUTES ?? 15),
 
-    dashboard: {
-      password: process.env.DASHBOARD_PASSWORD || '',
+    admin: {
+      password: process.env.ADMIN_PASSWORD || process.env.DASHBOARD_PASSWORD || '',
     },
   };
 }

@@ -1,28 +1,38 @@
-# One-click deploy on Render (render.com → New → Blueprint → pick this repo).
-# You'll be asked for the secret values; the rest have sensible defaults.
+# Render Blueprint: render.com → New → Blueprint → pick this GitHub repo.
+# Render reads this file and sets up the web service and its disk for you.
+# You'll be asked for the values marked "sync: false".
 services:
   - type: web
-    name: print-tracker
+    name: instagarment-pod
     runtime: node
-    # The free plan goes to sleep when idle, which delays alerts. "starter" stays awake.
+    # "starter" stays awake and allows a disk (needed). The free plan can't have a disk.
     plan: starter
+    region: oregon
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
-      - key: SHOPIFY_SHOP_DOMAIN
-        sync: false
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATA_DIR
+        value: /var/data
       - key: SHOPIFY_CLIENT_ID
         sync: false
       - key: SHOPIFY_CLIENT_SECRET
         sync: false
       - key: APP_URL
         sync: false
-      - key: DASHBOARD_PASSWORD
-        sync: false
+      - key: ADMIN_PASSWORD
+        generateValue: true
       - key: ALERT_EMAIL_TO
         sync: false
-      - key: ALERT_EMAIL_FROM
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
         sync: false
       - key: SMTP_HOST
         value: smtp.gmail.com
@@ -30,9 +40,3 @@ services:
         value: "465"
       - key: SMTP_SECURE
         value: "true"
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASS
-        sync: false
-      - key: TRACK_PRODUCT_TAG
-        value: print-on-demand
