@@ -1,0 +1,71 @@
+{%- comment -%}
+  The "The collection" block from the concept: eyebrow, heading, counts line,
+  product-type filter chips and the product grid.
+  Accepts:
+  - products: {Array} products to show
+  - eyebrow: {String}
+  - heading: {String}
+  - show_counts: {Boolean}
+  - show_filters: {Boolean}
+{%- endcomment -%}
+{%- liquid
+  assign types = products | map: 'type' | compact | uniq
+  assign type_count = 0
+  for t in types
+    if t != blank
+      assign type_count = type_count | plus: 1
+    endif
+  endfor
+-%}
+<div class="collection-block" data-collection-filter>
+  {%- if eyebrow != blank -%}
+    <p class="eyebrow">{{ eyebrow | escape }}</p>
+  {%- endif -%}
+  {%- if heading != blank -%}
+    <h2 class="display-heading">{{ heading | escape }}</h2>
+  {%- endif -%}
+
+  {%- if show_counts and type_count > 0 -%}
+    <p class="collection-block__counts">
+      {%- for t in types -%}
+        {%- if t != blank -%}
+          {%- assign n = products | where: 'type', t | size -%}
+          {{ n }} {% if n == 1 %}{{ t | escape }}{% else %}{% render 'pluralize-type', type: t %}{% endif %}
+          {%- unless forloop.last %} &middot; {% endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </p>
+  {%- endif -%}
+
+  {%- if show_filters and type_count > 1 -%}
+    <div class="filter-chips" role="group" aria-label="{{ 'collections.filter_label' | t }}">
+      <button type="button" class="chip is-active" data-filter="all" aria-pressed="true">
+        {{ 'collections.all_products' | t }}
+      </button>
+      {%- for t in types -%}
+        {%- if t != blank -%}
+          {%- assign n = products | where: 'type', t | size -%}
+          <button type="button" class="chip" data-filter="{{ t | handleize }}" aria-pressed="false">
+            {%- render 'pluralize-type', type: t %} ({{ n }})
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if products.size > 0 -%}
+    <ul class="product-grid">
+      {%- for product in products -%}
+        {%- liquid
+          assign loading = 'lazy'
+          if forloop.index <= 4
+            assign loading = 'eager'
+          endif
+        -%}
+        {% render 'product-card', product: product, loading: loading %}
+      {%- endfor -%}
+    </ul>
+  {%- else -%}
+    <p class="empty-state">{{ 'collections.empty' | t }}</p>
+  {%- endif -%}
+</div>

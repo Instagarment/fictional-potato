@@ -1,0 +1,13 @@
+{%- comment -%}
+  Prints the plural of a product type: "Skateboard" -> "Skateboards", "T-Shirt" -> "T-Shirts".
+  Accepts:
+  - type: {String}
+{%- endcomment -%}
+{%- liquid
+  assign last_char = type | slice: -1 | downcase
+  if last_char == 's'
+    echo type | escape
+  else
+    echo type | append: 's' | escape
+  endif
+-%}

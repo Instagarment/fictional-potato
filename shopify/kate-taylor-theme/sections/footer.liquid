@@ -1,0 +1,61 @@
+<footer class="site-footer">
+  <div class="page-width site-footer__inner">
+    {%- if section.settings.menu.links.size > 0 -%}
+      <ul class="site-footer__menu">
+        {%- for link in section.settings.menu.links -%}
+          <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+
+    {%- liquid
+      assign has_social = false
+      if section.settings.instagram != blank or section.settings.tiktok != blank or section.settings.x != blank
+        assign has_social = true
+      endif
+    -%}
+    {%- if has_social -%}
+      <ul class="site-footer__social">
+        {%- if section.settings.instagram != blank -%}
+          <li><a href="{{ section.settings.instagram }}" target="_blank" rel="noopener">Instagram</a></li>
+        {%- endif -%}
+        {%- if section.settings.tiktok != blank -%}
+          <li><a href="{{ section.settings.tiktok }}" target="_blank" rel="noopener">TikTok</a></li>
+        {%- endif -%}
+        {%- if section.settings.x != blank -%}
+          <li><a href="{{ section.settings.x }}" target="_blank" rel="noopener">X</a></li>
+        {%- endif -%}
+      </ul>
+    {%- endif -%}
+
+    <p class="site-footer__copyright">
+      &copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright | escape }}
+    </p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer"
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright text",
+      "default": "Kate Taylor · Official Merchandise"
+    },
+    { "type": "header", "content": "Social links" },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "tiktok", "label": "TikTok" },
+    { "type": "url", "id": "x", "label": "X" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Kate Taylor",
+    "theme_version": "1.0.0",
+    "theme_author": "Instagarment",
+    "theme_documentation_url": "https://github.com/instagarment/fictional-potato/tree/main/shopify",
+    "theme_support_url": "https://github.com/instagarment/fictional-potato/issues"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Background", "default": "#0b0a0c" },
+      { "type": "color", "id": "color_surface", "label": "Product tiles", "default": "#151317" },
+      { "type": "color", "id": "color_border", "label": "Borders", "default": "#2a262d" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#f5f2f4" },
+      { "type": "color", "id": "color_muted", "label": "Secondary text", "default": "#a79fa8" },
+      { "type": "color", "id": "color_accent", "label": "Accent (hot pink)", "default": "#e2408f" },
+      { "type": "color", "id": "color_accent_text", "label": "Text on accent", "default": "#ffffff" }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      { "type": "font_picker", "id": "heading_font", "label": "Headings", "default": "playfair_display_n7" },
+      { "type": "checkbox", "id": "heading_italic", "label": "Italic headings", "default": true },
+      { "type": "font_picker", "id": "body_font", "label": "Body", "default": "assistant_n4" }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "Page width", "min": 1000, "max": 1600, "step": 100, "unit": "px", "default": 1300 },
+      {
+        "type": "select",
+        "id": "card_image_fit",
+        "label": "Product tile images",
+        "options": [
+          { "value": "contain", "label": "Show the whole image" },
+          { "value": "cover", "label": "Fill the tile (may crop)" }
+        ],
+        "default": "contain"
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "32 × 32px .png" }
+    ]
+  }
+]

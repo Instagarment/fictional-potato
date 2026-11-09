@@ -1,0 +1,29 @@
+{%- liquid
+  assign heading_font = settings.heading_font
+  assign heading_italic = heading_font | font_modify: 'style', 'italic'
+  assign body_font = settings.body_font
+  assign body_bold = body_font | font_modify: 'weight', 'bold'
+-%}
+<style>
+  {{ heading_font | font_face: font_display: 'swap' }}
+  {%- if heading_italic %}{{ heading_italic | font_face: font_display: 'swap' }}{% endif %}
+  {{ body_font | font_face: font_display: 'swap' }}
+  {%- if body_bold %}{{ body_bold | font_face: font_display: 'swap' }}{% endif %}
+
+  :root {
+    --color-bg: {{ settings.color_background }};
+    --color-surface: {{ settings.color_surface }};
+    --color-border: {{ settings.color_border }};
+    --color-text: {{ settings.color_text }};
+    --color-muted: {{ settings.color_muted }};
+    --color-accent: {{ settings.color_accent }};
+    --color-accent-text: {{ settings.color_accent_text }};
+    --font-heading: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    --font-heading-weight: {{ heading_font.weight }};
+    --font-heading-style: {% if settings.heading_italic %}italic{% else %}normal{% endif %};
+    --font-body: {{ body_font.family }}, {{ body_font.fallback_families }};
+    --font-body-weight: {{ body_font.weight }};
+    --page-width: {{ settings.page_width }}px;
+    --card-image-fit: {{ settings.card_image_fit }};
+  }
+</style>

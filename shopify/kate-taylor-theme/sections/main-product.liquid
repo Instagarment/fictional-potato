@@ -1,0 +1,118 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+<section class="page-width section-pad product" data-product>
+  <div class="product__media">
+    {%- assign media_items = product.media | where: 'media_type', 'image' -%}
+    {%- if media_items.size > 0 -%}
+      <ul class="product__gallery">
+        {%- for media in media_items -%}
+          {%- liquid
+            assign media_alt = media.alt | default: product.title
+            assign media_loading = 'lazy'
+            if forloop.first
+              assign media_loading = 'eager'
+            endif
+          -%}
+          <li class="product__gallery-item" id="Media-{{ media.id }}">
+            {{
+              media
+              | image_url: width: 1400
+              | image_tag:
+                alt: media_alt,
+                widths: '500, 750, 1000, 1400',
+                sizes: '(min-width: 990px) 55vw, 100vw',
+                loading: media_loading
+            }}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="product__gallery-item">{{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}</div>
+    {%- endif -%}
+  </div>
+
+  <div class="product__info">
+    {%- if product.type != blank -%}<p class="eyebrow">{{ product.type | escape }}</p>{%- endif -%}
+    <h1 class="display-heading product__title">{{ product.title | escape }}</h1>
+    <p class="product__price" data-price>{{ current_variant.price | money }}</p>
+
+    {%- form 'product', product, class: 'product__form', data-product-form: '' -%}
+      {%- unless product.has_only_default_variant -%}
+        {%- for option in product.options_with_values -%}
+          <fieldset class="option-picker">
+            <legend>{{ option.name | escape }}</legend>
+            <div class="option-picker__values">
+              {%- for value in option.values -%}
+                <label class="option-pill">
+                  <input
+                    type="radio"
+                    name="option-{{ option.position }}"
+                    value="{{ value | escape }}"
+                    data-option-index="{{ forloop.parentloop.index0 }}"
+                    {% if option.selected_value == value %}checked{% endif %}
+                  >
+                  <span>{{ value | escape }}</span>
+                </label>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+        {%- endfor -%}
+      {%- endunless -%}
+
+      <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+      <label class="quantity">
+        <span>{{ 'products.quantity' | t }}</span>
+        <input type="number" name="quantity" value="1" min="1" inputmode="numeric">
+      </label>
+
+      <button
+        type="submit"
+        name="add"
+        class="button button--accent button--full"
+        data-add-button
+        {% unless current_variant.available %}disabled{% endunless %}
+      >
+        {%- if current_variant.available -%}{{ 'products.add_to_bag' | t }}{%- else -%}{{ 'products.sold_out' | t }}{%- endif -%}
+      </button>
+      <p class="product__status" data-form-status role="status" aria-live="polite"></p>
+    {%- endform -%}
+
+    {%- if product.description != blank -%}
+      <div class="rte product__description">{{ product.description }}</div>
+    {%- endif -%}
+  </div>
+
+  <script type="application/json" data-product-json>
+    {{ product.variants | json }}
+  </script>
+</section>
+
+{%- if section.settings.show_related -%}
+  {%- liquid
+    assign related = collections.all.products | where: 'type', product.type
+  -%}
+  {%- if related.size > 1 -%}
+    <section class="page-width section-pad">
+      <p class="eyebrow">{{ 'products.more_like_this' | t }}</p>
+      <ul class="product-grid">
+        {%- assign shown = 0 -%}
+        {%- for item in related -%}
+          {%- if item.id != product.id and shown < 4 -%}
+            {% render 'product-card', product: item %}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+    </section>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "checkbox", "id": "show_related", "label": "Show more products of the same type", "default": true }
+  ]
+}
+{% endschema %}

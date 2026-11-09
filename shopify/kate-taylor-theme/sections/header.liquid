@@ -1,0 +1,100 @@
+<header class="site-header" style="--logo-width: {{ section.settings.logo_width }}px;">
+  <div class="site-header__inner">
+    <button
+      class="site-header__link site-header__menu-toggle"
+      type="button"
+      aria-controls="MenuDrawer"
+      aria-expanded="false"
+      data-menu-open
+    >
+      <span class="hamburger" aria-hidden="true"></span>
+      {{ 'general.menu' | t }}
+    </button>
+
+    <a href="{{ routes.root_url }}" class="site-header__logo">
+      {%- if section.settings.logo != blank -%}
+        {{
+          section.settings.logo
+          | image_url: width: 600
+          | image_tag:
+            alt: shop.name,
+            class: 'site-header__logo-img',
+            widths: '200, 300, 400, 600',
+            sizes: '(min-width: 750px) 240px, 170px',
+            loading: 'eager'
+        }}
+      {%- else -%}
+        <img
+          src="{{ 'kate-taylor-logo.png' | asset_url }}"
+          alt="{{ shop.name }}"
+          width="1200"
+          height="400"
+          class="site-header__logo-img"
+        >
+      {%- endif -%}
+    </a>
+
+    <a href="{{ routes.cart_url }}" class="site-header__link site-header__bag">
+      {{ 'general.bag' | t }} <span class="site-header__count">(<span data-cart-count>{{ cart.item_count }}</span>)</span>
+    </a>
+  </div>
+</header>
+
+<div id="MenuDrawer" class="menu-drawer" hidden>
+  <div class="menu-drawer__backdrop" data-menu-close></div>
+  <nav class="menu-drawer__panel" aria-label="{{ 'general.menu' | t }}">
+    <button class="menu-drawer__close" type="button" data-menu-close>
+      {{ 'general.close' | t }} <span aria-hidden="true">&times;</span>
+    </button>
+    <ul class="menu-drawer__list">
+      {%- for link in section.settings.menu.links -%}
+        <li>
+          <a href="{{ link.url }}" {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
+          {%- if link.links != blank -%}
+            <ul class="menu-drawer__sublist">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        <li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li>
+        <li><a href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }}</a></li>
+        <li><a href="{{ routes.cart_url }}">{{ 'general.bag' | t }}</a></li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Leave empty to use the built-in silver Kate Taylor logo."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "default": 170
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

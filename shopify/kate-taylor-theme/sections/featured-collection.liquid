@@ -1,0 +1,49 @@
+{%- liquid
+  assign source = section.settings.collection
+  if source == blank
+    assign source = collections.all
+  endif
+  assign shown = source.products | slice: 0, section.settings.products_to_show
+-%}
+<section class="page-width section-pad">
+  {% render 'product-grid',
+    products: shown,
+    eyebrow: section.settings.eyebrow,
+    heading: section.settings.heading,
+    show_counts: section.settings.show_counts,
+    show_filters: section.settings.show_filters
+  %}
+  {%- if section.settings.show_view_all and source.products_count > section.settings.products_to_show -%}
+    <p class="view-all"><a class="button button--outline" href="{{ source.url }}">{{ 'collections.view_all' | t }}</a></p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Product collection",
+  "class": "section-featured-collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "New releases" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The collection" },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Leave empty to show every product in the store."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    { "type": "checkbox", "id": "show_counts", "label": "Show product counts (e.g. 4 Skateboards · 4 Posters)", "default": true },
+    { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true },
+    { "type": "checkbox", "id": "show_view_all", "label": "Show \"View all\" button when there are more products", "default": true }
+  ],
+  "presets": [{ "name": "Product collection" }]
+}
+{% endschema %}

@@ -1,0 +1,70 @@
+<section class="page-width section-pad cart">
+  <p class="eyebrow">{{ 'cart.eyebrow' | t }}</p>
+  <h1 class="display-heading">{{ 'cart.title' | t }}</h1>
+
+  {%- if cart.item_count > 0 -%}
+    <form action="{{ routes.cart_url }}" method="post" class="cart__form" novalidate>
+      <ul class="cart__items">
+        {%- for item in cart.items -%}
+          <li class="cart-item">
+            <a href="{{ item.url }}" class="cart-item__media">
+              {%- if item.image -%}
+                {%- assign item_alt = item.image.alt | default: item.product.title -%}
+                {{ item.image | image_url: width: 300 | image_tag: alt: item_alt, loading: 'lazy' }}
+              {%- endif -%}
+            </a>
+            <div class="cart-item__details">
+              <a href="{{ item.url }}" class="cart-item__title">{{ item.product.title | escape }}</a>
+              {%- unless item.product.has_only_default_variant -%}
+                <p class="cart-item__variant">{{ item.variant.title | escape }}</p>
+              {%- endunless -%}
+              {%- for property in item.properties -%}
+                {%- assign first_char = property.first | slice: 0 -%}
+                {%- if property.last != blank and first_char != '_' -%}
+                  <p class="cart-item__variant">{{ property.first | escape }}: {{ property.last | escape }}</p>
+                {%- endif -%}
+              {%- endfor -%}
+              <p class="cart-item__price">{{ item.final_line_price | money }}</p>
+              <div class="cart-item__actions">
+                <label class="quantity quantity--small">
+                  <span class="visually-hidden">{{ 'products.quantity' | t }}</span>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" inputmode="numeric">
+                </label>
+                <a href="{{ item.url_to_remove }}" class="cart-item__remove">{{ 'cart.remove' | t }}</a>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <div class="cart__summary">
+        {%- if section.settings.show_note -%}
+          <label class="cart__note">
+            <span>{{ 'cart.note' | t }}</span>
+            <textarea name="note" rows="3">{{ cart.note }}</textarea>
+          </label>
+        {%- endif -%}
+        <p class="cart__subtotal">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <strong>{{ cart.total_price | money_with_currency }}</strong>
+        </p>
+        <p class="cart__taxes">{{ 'cart.taxes_note' | t }}</p>
+        <button type="submit" name="update" class="button button--outline button--full">{{ 'cart.update' | t }}</button>
+        <button type="submit" name="checkout" class="button button--accent button--full">{{ 'cart.checkout' | t }}</button>
+      </div>
+    </form>
+  {%- else -%}
+    <p class="empty-state">{{ 'cart.empty' | t }}</p>
+    <p><a class="button button--accent" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }}</a></p>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Bag",
+  "class": "section-main-cart",
+  "settings": [
+    { "type": "checkbox", "id": "show_note", "label": "Let shoppers add an order note", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,21 @@
+{%- paginate blog.articles by 12 -%}
+  <section class="page-width page-width--narrow section-pad">
+    <h1 class="display-heading">{{ blog.title | escape }}</h1>
+    <ul class="article-list">
+      {%- for article in blog.articles -%}
+        <li>
+          <a href="{{ article.url }}">
+            <p class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</p>
+            <h2 class="article-list__title">{{ article.title | escape }}</h2>
+            {%- if article.excerpt != blank -%}<div class="rte">{{ article.excerpt }}</div>{%- endif -%}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {% render 'pagination', paginate: paginate %}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Blog", "class": "section-main-blog", "settings": [] }
+{% endschema %}

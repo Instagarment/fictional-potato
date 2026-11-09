@@ -1,0 +1,62 @@
+{
+  "general": {
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "close": "Close",
+    "bag": "Bag",
+    "home": "Home",
+    "shop_all": "Shop all",
+    "page": "Page {{ page }}",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "not_found": "This page doesn't exist"
+  },
+  "collections": {
+    "all_products": "All products",
+    "filter_label": "Filter by product type",
+    "empty": "No products here yet.",
+    "view_all": "View all",
+    "all_collections": "Collections",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
+  },
+  "products": {
+    "from_price": "From {{ price }}",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "quantity": "Quantity",
+    "add_to_bag": "Add to bag",
+    "adding": "Adding…",
+    "added": "Added to your bag.",
+    "view_bag": "View bag",
+    "more_like_this": "More like this"
+  },
+  "cart": {
+    "eyebrow": "Your order",
+    "title": "Your bag",
+    "remove": "Remove",
+    "note": "Order note",
+    "subtotal": "Subtotal",
+    "taxes_note": "Shipping and taxes are calculated at checkout.",
+    "update": "Update bag",
+    "checkout": "Check out",
+    "empty": "Your bag is empty."
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products",
+    "submit": "Search",
+    "no_results": "No results for “{{ terms }}”."
+  },
+  "password": {
+    "email": "Email address",
+    "notify": "Notify me",
+    "thanks": "Thanks — we'll email you when the store opens.",
+    "store_owner": "Store owner? Enter password",
+    "password": "Password",
+    "enter": "Enter"
+  }
+}

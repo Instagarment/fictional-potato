@@ -1,0 +1,44 @@
+{%- comment -%}
+  Renders one product tile.
+  Accepts:
+  - product: {Object}
+  - loading: {String} 'eager' or 'lazy' (optional)
+{%- endcomment -%}
+<li class="product-card" data-type="{{ product.type | handleize }}">
+  <a href="{{ product.url }}" class="product-card__link">
+    <div class="product-card__media">
+      {%- if product.featured_media -%}
+        {%- liquid
+          assign card_alt = product.featured_media.alt | default: product.title
+          assign card_loading = loading | default: 'lazy'
+        -%}
+        {{
+          product.featured_media
+          | image_url: width: 800
+          | image_tag:
+            alt: card_alt,
+            widths: '300, 400, 600, 800',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+            loading: card_loading
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      {%- endif -%}
+      {%- unless product.available -%}
+        <span class="product-card__badge">{{ 'products.sold_out' | t }}</span>
+      {%- endunless -%}
+    </div>
+    <div class="product-card__info">
+      <h3 class="product-card__title">{{ product.title | escape }}</h3>
+      <p class="product-card__meta">
+        {%- if product.type != blank -%}{{ product.type | escape }} &middot; {% endif -%}
+        {%- if product.price_varies -%}
+          {%- assign min_price = product.price_min | money -%}
+          {{ 'products.from_price' | t: price: min_price }}
+        {%- else -%}
+          {{ product.price | money }}
+        {%- endif -%}
+      </p>
+    </div>
+  </a>
+</li>

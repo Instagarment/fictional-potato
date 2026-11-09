@@ -1,0 +1,28 @@
+{%- paginate collection.products by section.settings.per_page -%}
+  <section class="page-width section-pad">
+    {% render 'product-grid',
+      products: collection.products,
+      eyebrow: section.settings.eyebrow,
+      heading: collection.title,
+      show_counts: section.settings.show_counts,
+      show_filters: section.settings.show_filters
+    %}
+    {%- if collection.description != blank -%}
+      <div class="rte collection-description">{{ collection.description }}</div>
+    {%- endif -%}
+    {% render 'pagination', paginate: paginate %}
+  </section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Shop" },
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_counts", "label": "Show product counts", "default": true },
+    { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,16 @@
+<article class="page-width page-width--narrow section-pad">
+  <p class="eyebrow">{{ article.published_at | time_tag: format: 'date' }}</p>
+  <h1 class="display-heading">{{ article.title | escape }}</h1>
+  {%- if article.image -%}
+    {%- assign article_alt = article.image.alt | default: article.title -%}
+    <div class="article__image">
+      {{ article.image | image_url: width: 1400 | image_tag: alt: article_alt, widths: '600, 900, 1400', sizes: '(min-width: 800px) 760px, 100vw' }}
+    </div>
+  {%- endif -%}
+  <div class="rte">{{ article.content }}</div>
+  <p><a href="{{ blog.url }}" class="chip">&larr; {{ blog.title | escape }}</a></p>
+</article>
+
+{% schema %}
+{ "name": "Article", "class": "section-main-article", "settings": [] }
+{% endschema %}
