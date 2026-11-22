@@ -3,11 +3,12 @@
   if source == blank
     assign source = collections.all
   endif
-  assign shown = source.products | slice: 0, section.settings.products_to_show
+
 -%}
 <section class="page-width section-pad">
   {% render 'product-grid',
-    products: shown,
+    products: source.products,
+    limit: section.settings.products_to_show,
     eyebrow: section.settings.eyebrow,
     heading: section.settings.heading,
     show_counts: section.settings.show_counts,

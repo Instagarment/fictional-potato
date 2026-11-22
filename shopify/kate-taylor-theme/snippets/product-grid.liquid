@@ -7,9 +7,11 @@
   - heading: {String}
   - show_counts: {Boolean}
   - show_filters: {Boolean}
+  - limit: {Number} most products to show (optional, default 50)
 {%- endcomment -%}
 {%- liquid
   assign types = products | map: 'type' | compact | uniq
+  assign grid_limit = limit | default: 50
   assign type_count = 0
   for t in types
     if t != blank
@@ -55,7 +57,7 @@
 
   {%- if products.size > 0 -%}
     <ul class="product-grid">
-      {%- for product in products -%}
+      {%- for product in products limit: grid_limit -%}
         {%- liquid
           assign loading = 'lazy'
           if forloop.index <= 4
