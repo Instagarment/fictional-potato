@@ -26,11 +26,10 @@ alpha = soft + (1 - soft) * shadow_a
 w = (soft / np.maximum(alpha, 1e-4))[..., None]          # share of deck colour in each pixel
 rgb = a * w
 out = Image.fromarray(np.dstack([np.clip(rgb, 0, 255), alpha * 255]).astype(np.uint8), "RGBA")
-bbox = Image.fromarray(((alpha > 0.03) * 255).astype(np.uint8)).getbbox()
-out = out.crop(bbox)
-W, H = out.size
-s = max(W, H) + 40
-canvas = Image.new("RGBA", (s, s), (0, 0, 0, 0))
-canvas.paste(out, ((s - W) // 2, (s - H) // 2))
+# crop tight to the deck and its shadow, with a small margin, so the deck
+# fills tall product tiles instead of sitting in a mostly empty square
+x0, y0, x1, y1 = Image.fromarray(((alpha > 0.03) * 255).astype(np.uint8)).getbbox()
+m = 14
+canvas = out.crop((x0 - m, y0 - m, x1 + m, y1 + m))
 canvas.save(dst, optimize=True)
 print(dst, "deck px", int(deck.sum()), "size", canvas.size)
