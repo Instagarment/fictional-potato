@@ -1,5 +1,5 @@
 {%- paginate collection.products by section.settings.per_page -%}
-  <section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %};">
+  <section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %}; --desktop-cols: {{ section.settings.columns_desktop }};">
     {% render 'product-grid',
       products: collection.products,
       eyebrow: section.settings.eyebrow,
@@ -33,6 +33,15 @@
         { "value": "extra_tall", "label": "Extra tall (1:2)" }
       ],
       "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Products per row on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
     },
     { "type": "checkbox", "id": "show_counts", "label": "Show product counts", "default": true },
     { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true }
