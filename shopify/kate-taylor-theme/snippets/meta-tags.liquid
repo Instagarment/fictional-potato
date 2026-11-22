@@ -6,15 +6,31 @@
   if request.page_type == 'product'
     assign og_type = 'product'
   endif
+
+  comment
+    Link previews (iMessage, Instagram, Facebook...) use og:image. The homepage, and any page
+    without its own image, uses the theme's "Social sharing image" setting.
+  endcomment
+  assign og_image = page_image
+  if settings.share_image != blank
+    if og_image == blank or request.page_type == 'index'
+      assign og_image = settings.share_image
+    endif
+  endif
 -%}
 <meta property="og:site_name" content="{{ shop.name }}">
 <meta property="og:url" content="{{ og_url }}">
 <meta property="og:title" content="{{ og_title | escape }}">
 <meta property="og:type" content="{{ og_type }}">
 <meta property="og:description" content="{{ og_description | escape }}">
-{%- if page_image -%}
-  <meta property="og:image" content="http:{{ page_image | image_url: width: 1200 }}">
-  <meta property="og:image:secure_url" content="https:{{ page_image | image_url: width: 1200 }}">
+{%- if og_image -%}
+  <meta property="og:image" content="https:{{ og_image | image_url: width: 1200 }}">
+  <meta property="og:image:secure_url" content="https:{{ og_image | image_url: width: 1200 }}">
+  {%- if og_image.width and og_image.width <= 1200 -%}
+    <meta property="og:image:width" content="{{ og_image.width }}">
+    <meta property="og:image:height" content="{{ og_image.height }}">
+  {%- endif -%}
+  <meta property="og:image:alt" content="{{ og_image.alt | default: shop.name | escape }}">
 {%- endif -%}
 {%- if request.page_type == 'product' -%}
   <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html | escape }}">
@@ -23,3 +39,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ og_title | escape }}">
 <meta name="twitter:description" content="{{ og_description | escape }}">
+{%- if og_image -%}
+  <meta name="twitter:image" content="https:{{ og_image | image_url: width: 1200 }}">
+{%- endif -%}
