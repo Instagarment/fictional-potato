@@ -11,10 +11,14 @@
     Link previews (iMessage, Instagram, Facebook...) use og:image. The homepage, and any page
     without its own image, uses the theme's "Social sharing image" setting.
   endcomment
+  assign share_image = settings.share_image
+  if share_image == blank
+    assign share_image = images['kate-taylor-share.jpg']
+  endif
   assign og_image = page_image
-  if settings.share_image != blank
+  if share_image != blank
     if og_image == blank or request.page_type == 'index'
-      assign og_image = settings.share_image
+      assign og_image = share_image
     endif
   endif
 -%}
