@@ -276,3 +276,13 @@ button, input, textarea, select { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Product collection section: products per row on desktop, and centring a row that isn't full */
+.product-grid { --cols: 2; --gap: 12px; }
+@media (min-width: 750px) { .product-grid { --cols: 3; --gap: 18px; } }
+@media (min-width: 990px) {
+  .product-grid { --gap: 22px; grid-template-columns: repeat(var(--desktop-cols, 4), minmax(0, 1fr)); }
+  .product-grid { --cols: var(--desktop-cols, 4); }
+}
+.product-grid--centered { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap); }
+.product-grid--centered > .product-card { flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols)); }

@@ -8,6 +8,7 @@
   - show_counts: {Boolean}
   - show_filters: {Boolean}
   - limit: {Number} most products to show (optional, default 50)
+  - centered: {Boolean} centre a row that is not full (optional)
 {%- endcomment -%}
 {%- liquid
   assign types = products | map: 'type' | compact | uniq
@@ -56,7 +57,7 @@
   {%- endif -%}
 
   {%- if products.size > 0 -%}
-    <ul class="product-grid">
+    <ul class="product-grid{% if centered %} product-grid--centered{% endif %}">
       {%- for product in products limit: grid_limit -%}
         {%- liquid
           assign loading = 'lazy'

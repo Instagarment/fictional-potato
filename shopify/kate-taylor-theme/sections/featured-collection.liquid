@@ -5,10 +5,11 @@
   endif
 
 -%}
-<section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %};">
+<section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %}; --desktop-cols: {{ section.settings.columns_desktop }};">
   {% render 'product-grid',
     products: source.products,
     limit: section.settings.products_to_show,
+    centered: section.settings.center_row,
     eyebrow: section.settings.eyebrow,
     heading: section.settings.heading,
     show_counts: section.settings.show_counts,
@@ -53,6 +54,21 @@
         { "value": "extra_tall", "label": "Extra tall (1:2)" }
       ],
       "default": "portrait"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Products per row on desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "center_row",
+      "label": "Centre products when a row isn't full",
+      "default": false
     },
     { "type": "checkbox", "id": "show_counts", "label": "Show product counts (e.g. 4 Skateboards · 4 Posters)", "default": true },
     { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true },
