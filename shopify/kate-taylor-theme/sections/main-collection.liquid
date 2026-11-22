@@ -1,5 +1,5 @@
 {%- paginate collection.products by section.settings.per_page -%}
-  <section class="page-width section-pad">
+  <section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %};">
     {% render 'product-grid',
       products: collection.products,
       eyebrow: section.settings.eyebrow,
@@ -21,6 +21,19 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "Shop" },
     { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "label": "Product image shape",
+      "info": "Tall shapes suit skateboards and posters.",
+      "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "portrait", "label": "Portrait (4:5)" },
+        { "value": "tall", "label": "Tall (2:3)" },
+        { "value": "extra_tall", "label": "Extra tall (1:2)" }
+      ],
+      "default": "portrait"
+    },
     { "type": "checkbox", "id": "show_counts", "label": "Show product counts", "default": true },
     { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true }
   ]

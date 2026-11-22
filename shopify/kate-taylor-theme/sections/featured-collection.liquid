@@ -5,7 +5,7 @@
   endif
 
 -%}
-<section class="page-width section-pad">
+<section class="page-width section-pad" style="--card-aspect: {% render 'image-shape', shape: section.settings.image_shape %};">
   {% render 'product-grid',
     products: source.products,
     limit: section.settings.products_to_show,
@@ -40,6 +40,19 @@
       "max": 48,
       "step": 4,
       "default": 24
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "label": "Product image shape",
+      "info": "Tall shapes suit skateboards and posters.",
+      "options": [
+        { "value": "square", "label": "Square" },
+        { "value": "portrait", "label": "Portrait (4:5)" },
+        { "value": "tall", "label": "Tall (2:3)" },
+        { "value": "extra_tall", "label": "Extra tall (1:2)" }
+      ],
+      "default": "portrait"
     },
     { "type": "checkbox", "id": "show_counts", "label": "Show product counts (e.g. 4 Skateboards · 4 Posters)", "default": true },
     { "type": "checkbox", "id": "show_filters", "label": "Show product type filter buttons", "default": true },
